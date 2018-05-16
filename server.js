@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 const notes = [
   'http is a protocol',
@@ -10,6 +11,7 @@ const notes = [
 // app.get('/', (req, res) => res.send('Web Notes'));
 // app.use('/', express.static('views'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan('tiny'));
 app.use('/css', express.static('css'));
 
 app.get('/', (req, res) => {
