@@ -9,21 +9,27 @@
         <h1>Notes App</h1>
         <p>This is a place where I can store my class notes.</p>
     </header>
-
+    <form method='post' action='/notes'>
+      <textarea name="note" cols="20" rows="1"></textarea>
+      <button type="submit" value="Save">Save</button>
+    </form>
     <% for(let i = 0; i < notes.length; i++) { %>
       <div class="card">
         <div class="card-header">
           Note <%= i + 1 %>
+          <input id='_put'> <button onclick='putNote(<%=i%>)' class='btn btn-primary' >Update</button>
         </div>
         <div class="card-body">
           <%= notes[i] %>
+          <button onclick='deleteNote(<%=i%>)' class='btn btn-danger'>Delete</button>
         </div>
       </div>
     <% } %>  
-    <form method='post' action='/notes'>
-      <textarea name="note" cols="20" rows="1"></textarea>
-      <button type="submit" value="Save">Save</button>
 
-    </form>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>
