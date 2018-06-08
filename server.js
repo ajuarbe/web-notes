@@ -1,27 +1,54 @@
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
+const Note = require('./test/connection');
+mongoose.connect('mongodb://localhost/webnotes');
 
-const notes = [
-  'http is a protocol',
-  'http requests have a url, method, header, and body',
-  'This is me adding another note'
-];
+// const MongoClient = require('mongodb').MongoClient;
+// const url = 'mongodb://localhost:3000/';
+
+
+// const notes = [
+//   'http is a protocol',
+//   'http requests have a url, method, header, and body',
+//   'This is me adding another note'
+// ];
 // app.get('/', (req, res) => res.send('Web Notes'));
 // app.use('/', express.static('views'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 app.use('/css', express.static('css'));
-app.use('/js', express.static('js')) 
+app.use('/js', express.static('js'));
+
+// MongoClient.connect(url, (err, db) => {
+//   if (err) throw err;
+//   let dbo = db.db('webnotesapp');
+//   dbo.createCollection('notes', (err, res) => {
+//     if (err) throw err;
+//     console.log('Collection created!');
+//     db.close();
+//   })
+// })
 
 app.get('/', (req, res) => {
-  res.render('notes', { notes: notes });
+  Note.find({}, (err, noteCollection) => {
+    if (err) return console.log(err);
+    console.log(noteCollection);
+    res.render('notes', {notes:noteCollection});
+  })
 });
 
 app.post('/notes', (req, res) => {
-  notes.push(req.body.note);
+  Note.create({
+    cardBody: req.body.note
+  }, (err, newNote) => {
+    if(err) return console.log(`Error message: ${err}`);
+    console.log('New note posted!');
+  })
   res.redirect('/');
 });
 
@@ -46,4 +73,5 @@ app.delete('/notes/:id', (req, res) => {
 
 
 
-app.listen(3000, () => console.log('Listening on port 3000!'));
+app.listen(port, () => console.log(`Listening on port ${port}!`));
+
